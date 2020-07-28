@@ -17,16 +17,21 @@ public class UserEntityResponseForAnyPeriod {
 
     @JsonIgnore
     private List<Url> urlsList = new ArrayList<>();
-    private Integer uniqueUserVisit;
+    private Long uniqueUserVisit;
     private Integer totalNumberOfVisit;
     private List<String> regularUsers = new ArrayList<>();
     private Integer numberOfRegularUser;
+    private List<String>uniqueUserList = new ArrayList<>();
+
 
     public UserEntityResponseForAnyPeriod(LocalDate localDate, List<UserEntity> userList) {
 
         for (UserEntity user : userList) {
-            if (user.getUrls().iterator().next().getDate().equals(localDate)) {
-                urlsList.addAll(user.getUrls());
+            if (user.getUrls().iterator().hasNext()) {
+                if (user.getUrls().iterator().next().getDate().equals(localDate)) {
+                    urlsList.addAll(user.getUrls());
+                    uniqueUserList.add(user.getUsername());
+                }
             }
 
         }
@@ -37,7 +42,7 @@ public class UserEntityResponseForAnyPeriod {
         }
         this.numberOfRegularUser = regularUsers.size();
         this.totalNumberOfVisit = urlsList.size();
-        this.uniqueUserVisit = userList.size();
+        this.uniqueUserVisit = uniqueUserList.stream().distinct().count();
 
     }
 }
